@@ -14,6 +14,11 @@ export class SunComponent implements OnInit {
     azimuth: number
   };
   currentObserverPosition: Position;
+  deviceOrientiation: {
+    alpha: number,
+    beta: number,
+    gamma: number
+  };
 
   constructor() { }
 
@@ -39,9 +44,14 @@ export class SunComponent implements OnInit {
           console.log('Geolocation error: '+ error);
         },
         { enableHighAccuracy: true });
-      } else {
+    } else {
         console.log('Geolocation not supported in this browser');
-      }
+    }
+
+    var deviceOrientationEvent = new DeviceOrientationEvent("deviceorientation");
+    if (deviceOrientationEvent) {
+      this.deviceOrientiation = deviceOrientationEvent;
+    }
   }
 
 }

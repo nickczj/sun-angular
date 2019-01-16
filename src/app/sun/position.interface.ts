@@ -1,4 +1,9 @@
 export interface Position {
+    latitude: number,
+    longitude: number
+    accuracy: number,
     altitude: number,
-    azimuth: number
+    altitudeAccuracy: number,
+    heading: number,
+    speed: number
 }

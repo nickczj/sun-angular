@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --port 9999",
-    "build:debug": "ng build",
+    "start": "ng serve",
+    "start:local": "ng serve --port 9999",
+    "build": "ng build",
     "build:prod": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",

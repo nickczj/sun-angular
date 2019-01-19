@@ -15,6 +15,7 @@ export class SunComponent implements OnInit {
   };
   currentObserverPosition: Position;
   deviceOrientiation: {
+    absolute: boolean,
     alpha: number,
     beta: number,
     gamma: number

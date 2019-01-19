@@ -29,6 +29,7 @@
     "mdbootstrap": "^4.6.1",
     "rxjs": "~6.2.0",
     "suncalc": "1.8.0",
+    "three-full": "^11.3.2",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {

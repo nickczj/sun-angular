@@ -92,7 +92,7 @@ export class SunComponent implements OnInit {
     renderer.setSize(window.innerWidth, window.innerHeight);
     docSphere.appendChild(renderer.domElement);
     
-    var geometry = new THREE.SphereGeometry(4, 15, 15, 0, Math.PI * 2, 0, Math.PI * 2);
+    var geometry = new THREE.SphereGeometry(3, 15, 15, 0, Math.PI * 2, 0, Math.PI * 2);
     var material = new THREE.MeshNormalMaterial();
     var sphere = new THREE.Mesh(geometry, material);
     scene.add(sphere);

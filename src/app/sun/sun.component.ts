@@ -64,9 +64,11 @@ export class SunComponent implements OnInit {
     function handleOrientation(event) {
       console.log("alpha: ");
       console.log(event.alpha);
-      this.deviceOrientiation.alpha = event.alpha;
-      this.deviceOrientiation.beta = event.beta;
-      this.deviceOrientiation.gamma = event.gamma;
+      this.deviceOrientiation = {
+        alpha: event.alpha,
+        beta: event.beta,
+        gamma: event.gamma
+      }
     }
   }
 

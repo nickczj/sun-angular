@@ -29,6 +29,8 @@ export class SunComponent implements OnInit {
     gamma: number
   };
 
+  isSunInit: boolean = false;
+
   constructor() { }
 
   ngOnInit() {
@@ -93,7 +95,10 @@ export class SunComponent implements OnInit {
           this.currentObserverPosition = position.coords;
           this.setSunPosition();
           this.setSunPositionXYZ(this.currentSunPosition);
-          this.createSphere(this.currentSunPositionXYZ);
+          if (!this.isSunInit) {
+            this.createSphere(this.currentSunPositionXYZ);
+            this.isSunInit = true;
+          }
         }, (error) => {
           console.log('Geolocation error: '+ error);
         },

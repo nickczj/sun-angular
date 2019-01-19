@@ -82,24 +82,19 @@ export class SunComponent implements OnInit {
   }
 
   createSphere() {
-    console.log("1");
     var scene = new THREE.Scene;
     var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
     var controls = new THREE.OrbitControls(camera);
+    controls.enableZoom = false;
 
-    console.log("2");
-
-    var docSphere = document.getElementById('sphere');
     var renderer = new THREE.WebGLRenderer({alpha: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    docSphere.appendChild(renderer.domElement);
+    document.body.appendChild(renderer.domElement);
     
-    console.log("3");
-
-    var geometry = new THREE.SphereGeometry(4, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
+    var geometry = new THREE.SphereGeometry(4, 15, 15, 0, Math.PI * 2, 0, Math.PI * 2);
     var material = new THREE.MeshNormalMaterial();
-    var cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
+    var sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
 
     //Camera position
     camera.position.set(0,0,10);
@@ -117,6 +112,6 @@ export class SunComponent implements OnInit {
       renderer.render(scene, camera);
     };
     
-  render();
- }
+    render();
+  }
 }

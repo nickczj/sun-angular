@@ -2,5 +2,14 @@
     margin-left: 46%;
     margin-right: 46%;
     height: 70px;
-    width: 8%;
+    width: 8%
+}
+
+#sphere {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 100vh;
 }

@@ -87,9 +87,10 @@ export class SunComponent implements OnInit {
     var controls = new THREE.OrbitControls(camera);
     controls.enableZoom = false;
 
+    var docSphere = document.getElementById('sphere');
     var renderer = new THREE.WebGLRenderer({alpha: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+    docSphere.appendChild(renderer.domElement);
     
     var geometry = new THREE.SphereGeometry(4, 15, 15, 0, Math.PI * 2, 0, Math.PI * 2);
     var material = new THREE.MeshNormalMaterial();

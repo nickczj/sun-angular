@@ -89,9 +89,10 @@ export class SunComponent implements OnInit {
 
     console.log("2");
 
+    var docSphere = document.getElementById('sphere');
     var renderer = new THREE.WebGLRenderer({alpha: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+    docSphere.appendChild(renderer.domElement);
     
     console.log("3");
 

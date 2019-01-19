@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as SunCalc from 'suncalc';
 import { Position } from './position.interface';
+import * as THREE from 'three-full';
 
 @Component({
   selector: 'app-sun',
@@ -25,7 +26,7 @@ export class SunComponent implements OnInit {
 
   ngOnInit() {
     this.subscribeCurrentPosition();
-    setInterval(() => this.subscribeCurrentPosition(), 3000);
+    setInterval(() => this.subscribeCurrentPosition(), 5000);
 
     var lat = this.currentObserverPosition.longitude;
     var long = this.currentObserverPosition.latitude;

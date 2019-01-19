@@ -11,5 +11,11 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    min-height: 100vh;
+}
+html, body {
+    width: 98vw;
+    min-width: 99%;
+    height: 98vh;
+    min-height: 99%;
+    overflow: hidden;
 }

@@ -15,6 +15,12 @@ export class SunComponent implements OnInit {
     azimuth: number
   };
 
+  currentSunPositionXYZ: {
+    x: number,
+    y: number,
+    z: number
+  }
+
   currentObserverPosition: Position;
 
   deviceOrientiation: {
@@ -28,8 +34,8 @@ export class SunComponent implements OnInit {
 
   ngOnInit() {
     this.initData();
-    this.createSphere();
     this.subscribeCurrentPosition();
+    this.createSphere(this.currentSunPositionXYZ);
     setInterval(() => this.subscribeCurrentPosition(), 10000);    
   }
 
@@ -53,6 +59,14 @@ export class SunComponent implements OnInit {
     console.log(this.currentSunPosition);
   }
 
+  setSunPositionXYZ(currentSunPosition){
+    this.currentSunPositionXYZ = {
+      x: 50 * Math.cos( currentSunPosition.altitude ) * Math.sin( currentSunPosition.azimuth + Math.PI );
+      y: 50 * Math.cos( currentSunPosition.altitude ) * Math.cos( currentSunPosition.azimuth + Math.PI );
+      z: 50 * Math.sin( currentSunPosition.altitude );
+    }
+  }
+
   subscribeCurrentPosition() {
     if (window.navigator.geolocation) {
       window.navigator.geolocation.watchPosition(
@@ -61,6 +75,7 @@ export class SunComponent implements OnInit {
           console.log(position);
           this.currentObserverPosition = position.coords;
           this.setSunPosition();
+          this.setSunPositionXYZ(this.currentSunPosition);
         }, (error) => {
           console.log('Geolocation error: '+ error);
         },
@@ -81,7 +96,7 @@ export class SunComponent implements OnInit {
     }
   }
 
-  createSphere() {
+  createSphere(currentSunPositionXYZ) {
     var scene = new THREE.Scene;
     var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 10000);
     var controls = new THREE.OrbitControls(camera);
@@ -95,6 +110,8 @@ export class SunComponent implements OnInit {
     //Axes
     var axes = new THREE.AxesHelper(5);
     scene.add(axes);
+
+    this.createDot(scene, currentSunPositionXYZ);
 
     //Create Sphere
     var geometry = new THREE.SphereGeometry(3, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
@@ -122,5 +139,28 @@ export class SunComponent implements OnInit {
     };
     
     render();
+  }
+
+  createDot(scene, currentSunPositionXYZ) {
+    var dot = new THREE.BufferGeometry();
+    var color = new THREE.Color();
+
+    var x = 0.5;
+		var y = 0.5;
+		var z = 0.5;
+		var positions = [ x, y, z ];
+					// colors
+		var vx = 0.5;
+		var vy = 0.5;
+    var vz = 0.5;
+    color.setRGB( vx, vy, vz );
+		var	colors = [ color.r, color.g, color.b ];
+
+    dot.addAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
+    dot.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+    
+    var mat = new THREE.PointsMaterial();
+    var point = new THREE.Points( dot, mat );
+    scene.add(point);
   }
 }

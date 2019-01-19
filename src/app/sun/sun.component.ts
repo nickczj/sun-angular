@@ -26,16 +26,16 @@ export class SunComponent implements OnInit {
   deviceOrientiation: {
     alpha: number,
     beta: number,
-    gamma: number,
-    absolute: boolean
+    gamma: number
   };
 
   constructor() { }
 
   ngOnInit() {
     this.initData();
+    this.subscribeDeviceOrientation();
     this.subscribeCurrentPosition();
-    this.createSphere(this.currentSunPositionXYZ);
+    // this.createSphere(this.currentSunPositionXYZ);
     setInterval(() => this.subscribeCurrentPosition(), 10000);    
   }
 
@@ -49,6 +49,23 @@ export class SunComponent implements OnInit {
       heading: 0,
       speed: 0
     }
+
+    this.deviceOrientiation = {
+      alpha: 0,
+      beta: 0,
+      gamma: 0
+    }
+  }
+
+  subscribeDeviceOrientation() {
+    window.addEventListener("deviceorientation", handleOrientation, true);
+    function handleOrientation(event) {
+      console.log("alpha: ");
+      console.log(event.alpha);
+      this.deviceOrientiation.alpha = event.alpha;
+      this.deviceOrientiation.beta = event.beta;
+      this.deviceOrientiation.gamma = event.gamma;
+    }
   }
 
   setSunPosition() {
@@ -61,9 +78,9 @@ export class SunComponent implements OnInit {
 
   setSunPositionXYZ(currentSunPosition){
     this.currentSunPositionXYZ = {
-      x: 50 * Math.cos( currentSunPosition.altitude ) * Math.sin( currentSunPosition.azimuth + Math.PI );
-      y: 50 * Math.cos( currentSunPosition.altitude ) * Math.cos( currentSunPosition.azimuth + Math.PI );
-      z: 50 * Math.sin( currentSunPosition.altitude );
+      x: 3 * Math.cos( currentSunPosition.altitude ) * Math.sin( currentSunPosition.azimuth + Math.PI ),
+      y: 3 * Math.cos( currentSunPosition.altitude ) * Math.cos( currentSunPosition.azimuth + Math.PI ),
+      z: 3 * Math.sin( currentSunPosition.altitude )
     }
   }
 
@@ -76,23 +93,13 @@ export class SunComponent implements OnInit {
           this.currentObserverPosition = position.coords;
           this.setSunPosition();
           this.setSunPositionXYZ(this.currentSunPosition);
+          this.createSphere(this.currentSunPositionXYZ);
         }, (error) => {
           console.log('Geolocation error: '+ error);
         },
         { enableHighAccuracy: true });
     } else {
         console.log('Geolocation not supported in this browser');
-    }
-
-    var deviceOrientationEvent = new DeviceOrientationEvent("deviceorientation");
-    if (deviceOrientationEvent) {
-      console.log("DOE: " + deviceOrientationEvent.alpha);
-      this.deviceOrientiation = { 
-        alpha: deviceOrientationEvent.alpha, 
-        beta: deviceOrientationEvent.beta, 
-        gamma: deviceOrientationEvent.gamma,
-        absolute: deviceOrientationEvent.absolute
-      };
     }
   }
 
@@ -127,7 +134,11 @@ export class SunComponent implements OnInit {
     sphere.add(wireframe);
 
     //Camera position
-    camera.position.set(8,8,8);
+    // camera.position.set(
+    //   this.deviceOrientiation.alpha,
+    //   this.deviceOrientiation.beta,
+    //   this.deviceOrientiation.gamma);
+    camera.position.set(10,10,10);
     controls.update();
 
     var render = function () {
@@ -148,8 +159,8 @@ export class SunComponent implements OnInit {
     var x = 0.5;
 		var y = 0.5;
 		var z = 0.5;
-		var positions = [ x, y, z ];
-					// colors
+		var positions = [ currentSunPositionXYZ.x, currentSunPositionXYZ.y, currentSunPositionXYZ.z ];
+		// colors
 		var vx = 0.5;
 		var vy = 0.5;
     var vz = 0.5;

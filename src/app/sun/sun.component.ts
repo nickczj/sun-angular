@@ -13,33 +13,52 @@ export class SunComponent implements OnInit {
     altitude: number, 
     azimuth: number
   };
+
   currentObserverPosition: Position;
+
   deviceOrientiation: {
     alpha: number,
     beta: number,
-    gamma: number
+    gamma: number,
+    absolute: boolean
   };
 
   constructor() { }
 
   ngOnInit() {
+    this.initData();
     this.subscribeCurrentPosition();
-    setInterval(() => this.subscribeCurrentPosition(), 3000);
+    setInterval(() => this.subscribeCurrentPosition(), 10000);
+  }
 
+  initData() {
+    this.currentObserverPosition = {
+      latitude: 0,
+      longitude: 0,
+      accuracy: 0,
+      altitude: 0,
+      altitudeAccuracy: 0,
+      heading: 0,
+      speed: 0
+    }
+  }
+
+  setSunPosition() {
     var lat = this.currentObserverPosition.longitude;
     var long = this.currentObserverPosition.latitude;
     
     this.currentSunPosition = SunCalc.getPosition(new Date(), lat, long);
     console.log(this.currentSunPosition);
-
   }
 
   subscribeCurrentPosition() {
     if (window.navigator.geolocation) {
       window.navigator.geolocation.watchPosition(
         (position) => {
+          console.log("POSITION: ");
           console.log(position);
           this.currentObserverPosition = position.coords;
+          this.setSunPosition();
         }, (error) => {
           console.log('Geolocation error: '+ error);
         },
@@ -50,7 +69,13 @@ export class SunComponent implements OnInit {
 
     var deviceOrientationEvent = new DeviceOrientationEvent("deviceorientation");
     if (deviceOrientationEvent) {
-      this.deviceOrientiation = deviceOrientationEvent;
+      console.log("DOE: " + deviceOrientationEvent.alpha);
+      this.deviceOrientiation = { 
+        alpha: deviceOrientationEvent.alpha, 
+        beta: deviceOrientationEvent.beta, 
+        gamma: deviceOrientationEvent.gamma,
+        absolute: deviceOrientationEvent.absolute
+      };
     }
   }
 

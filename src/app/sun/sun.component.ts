@@ -28,8 +28,9 @@ export class SunComponent implements OnInit {
 
   ngOnInit() {
     this.initData();
+    this.createSphere();
     this.subscribeCurrentPosition();
-    setInterval(() => this.subscribeCurrentPosition(), 10000);
+    setInterval(() => this.subscribeCurrentPosition(), 10000);    
   }
 
   initData() {
@@ -80,36 +81,41 @@ export class SunComponent implements OnInit {
     }
   }
 
-  // createSphere() {
-  //   console.log("1");
-  //   var scene = new THREE.Scene;
-  //   var camera = new THREE.PerspectiveCamera(50, 500 / 400, 0.1, 1000);
-    
-  //   console.log("2");
+  createSphere() {
+    console.log("1");
+    var scene = new THREE.Scene;
+    var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    var controls = new THREE.OrbitControls(camera);
 
-  //   var renderer = new THREE.WebGLRenderer();
-  //   renderer.setSize(500, 400);
-  //   document.body.appendChild(renderer.domElement);
-    
-  //   console.log("3");
+    console.log("2");
 
-  //   var geometry = new THREE.SphereGeometry(3, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
-  //   var material = new THREE.MeshNormalMaterial();
-  //   var cube = new THREE.Mesh(geometry, material);
-  //   scene.add(cube);
+    var renderer = new THREE.WebGLRenderer({alpha: true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
     
-    
-  //   camera.position.z = 10;
-  //   var render = function () {
-  //       requestAnimationFrame(render);
-    
-  //       // cube.rotateX();
-  //       cube.rotation.y += 0.01;
-    
-  //       renderer.render(scene, camera);
-  //   };
-    
-  //   render();
-  // }
+    console.log("3");
 
+    var geometry = new THREE.SphereGeometry(4, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
+    var material = new THREE.MeshNormalMaterial();
+    var cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    //Camera position
+    camera.position.set(0,0,10);
+    controls.update();
+    //camera.position.z = 10;
+
+
+    var render = function () {
+      requestAnimationFrame(render);
+
+      //cube.rotation.y += 0.00;
+      
+      controls.update();
+
+      renderer.render(scene, camera);
+    };
+    
+  render();
+ }
 }

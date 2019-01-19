@@ -83,7 +83,7 @@ export class SunComponent implements OnInit {
 
   createSphere() {
     var scene = new THREE.Scene;
-    var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 10000);
     var controls = new THREE.OrbitControls(camera);
     controls.enableZoom = false;
 
@@ -92,22 +92,30 @@ export class SunComponent implements OnInit {
     renderer.setSize(window.innerWidth, window.innerHeight);
     docSphere.appendChild(renderer.domElement);
     
-    var geometry = new THREE.SphereGeometry(3, 15, 15, 0, Math.PI * 2, 0, Math.PI * 2);
+    //Axes
+    var axes = new THREE.AxesHelper(5);
+    scene.add(axes);
+
+    //Create Sphere
+    var geometry = new THREE.SphereGeometry(3, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
     var material = new THREE.MeshNormalMaterial();
+    material.colorWrite = false;
     var sphere = new THREE.Mesh(geometry, material);
     scene.add(sphere);
 
-    //Camera position
-    camera.position.set(0,0,10);
-    controls.update();
-    //camera.position.z = 10;
+    //Grid line
+    var geo = new THREE.EdgesGeometry( sphere.geometry ); // or WireframeGeometry
+    var mat = new THREE.LineBasicMaterial( { color: 0xffffff, linewidth: 2 } );
+    var wireframe = new THREE.LineSegments( geo, mat );
+    sphere.add(wireframe);
 
+    //Camera position
+    camera.position.set(8,8,8);
+    controls.update();
 
     var render = function () {
       requestAnimationFrame(render);
 
-      //cube.rotation.y += 0.00;
-      
       controls.update();
 
       renderer.render(scene, camera);

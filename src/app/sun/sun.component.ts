@@ -29,7 +29,7 @@ export class SunComponent implements OnInit {
 
     var lat = this.currentObserverPosition.longitude;
     var long = this.currentObserverPosition.latitude;
-    
+
     this.currentSunPosition = SunCalc.getPosition(new Date(), lat, long);
     console.log(this.currentSunPosition);
 

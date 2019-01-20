@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as SunCalc from 'suncalc';
 import { Position } from './position.interface';
 import * as THREE from 'three-full';
+import { ThenableWebDriver } from 'selenium-webdriver';
 
 @Component({
   selector: 'app-sun',
@@ -32,6 +33,8 @@ export class SunComponent implements OnInit {
   };
 
   isSunInit: boolean = false;
+  dot: THREE.BufferGeometry;
+  position: any[];
 
   pi = Math.PI; pi05 = this.pi * 0.5; pi2 = this.pi * 2;
 	d2r = this.pi / 180; r2d = 180 / this.pi;
@@ -105,6 +108,9 @@ export class SunComponent implements OnInit {
           if (!this.isSunInit) {
             this.createSphere(this.currentSunPositionXYZ);
             this.isSunInit = true;
+          }
+          else{
+            this.updatePosition()
           }
         }, (error) => {
           console.log('Geolocation error: '+ error);
@@ -180,13 +186,13 @@ export class SunComponent implements OnInit {
   }
 
   createDot(scene, currentSunPositionXYZ) {
-    var dot = new THREE.BufferGeometry();
+    this.dot = new THREE.BufferGeometry();
     var color = new THREE.Color();
 
     var x = 0.5;
 		var y = 0.5;
 		var z = 0.5;
-		var positions = [ currentSunPositionXYZ.x, currentSunPositionXYZ.y, currentSunPositionXYZ.z ];
+		this.position = [ currentSunPositionXYZ.x, currentSunPositionXYZ.y, currentSunPositionXYZ.z ];
 		// colors
 		var vx = 0.5;
 		var vy = 0.5;
@@ -194,11 +200,15 @@ export class SunComponent implements OnInit {
     color.setRGB( vx, vy, vz );
 		var	colors = [ color.r, color.g, color.b ];
 
-    dot.addAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
-    dot.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+    this.dot.addAttribute( 'position', new THREE.Float32BufferAttribute( this.position, 3 ) );
+    this.dot.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
     
     var mat = new THREE.PointsMaterial();
-    var point = new THREE.Points( dot, mat );
+    var point = new THREE.Points( this.dot, mat );
     scene.add(point);
+  }
+
+  updatePosition(){
+    this.dot.attributes.position.needsUpdate = true;
   }
 }

@@ -126,8 +126,8 @@ export class SunComponent implements OnInit {
     var camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 10000);
     var controls = new THREE.OrbitControls(camera);
     controls.enableZoom = false;
-    controls.minDistance = 8;
-    controls.maxDistance = 8;
+    //controls.minDistance = 8;
+    //controls.maxDistance = 8;
 
     var docSphere = document.getElementById('sphere');
     var renderer = new THREE.WebGLRenderer({alpha: true});
@@ -196,20 +196,12 @@ export class SunComponent implements OnInit {
   createCrossHair(scene,camera){
     var lineMat = new THREE.LineBasicMaterial({ color: 0xAAFFAA, linewidth:3 });
 
-<<<<<<< HEAD
-  // crosshair size
-=======
     // crosshair size
->>>>>>> 180cb5fa71898816aea9ad45e8ba46786a53fbd6
     var x = 0.01, y = 0.01;
 
     var geometry = new THREE.Geometry();
 
-<<<<<<< HEAD
-  // crosshair
-=======
     // crosshair
->>>>>>> 180cb5fa71898816aea9ad45e8ba46786a53fbd6
     geometry.vertices.push(new THREE.Vector3(0, y, 0));
     geometry.vertices.push(new THREE.Vector3(0, -y, 0));
     geometry.vertices.push(new THREE.Vector3(0, 0, 0));

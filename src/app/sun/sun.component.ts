@@ -117,9 +117,11 @@ export class SunComponent implements OnInit {
 
   createSphere(currentSunPositionXYZ) {
     var scene = new THREE.Scene;
-    var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 10000);
+    var camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 10000);
     var controls = new THREE.OrbitControls(camera);
     controls.enableZoom = false;
+    controls.minDistance = 8;
+    controls.maxDistance = 8;
 
     var docSphere = document.getElementById('sphere');
     var renderer = new THREE.WebGLRenderer({alpha: true});
@@ -154,7 +156,7 @@ export class SunComponent implements OnInit {
         var z = this.RADIUS * Math.sin(this.deviceOrientiation.alpha * this.d2r);
         console.log("x " + x, "y " + y, "z " + z);
         camera.position.set(x, y, z);
-        // camera.position.set(10,10,10);
+        //camera.position.set(20,20,20);
         controls.update();
 
         var render = function () {
@@ -175,7 +177,6 @@ export class SunComponent implements OnInit {
         gamma: event.gamma
       }
     }, true)
-
   }
 
   createDot(scene, currentSunPositionXYZ) {

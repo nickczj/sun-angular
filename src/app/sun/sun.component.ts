@@ -243,7 +243,7 @@ export class SunComponent implements OnInit {
     this.dot.addAttribute( 'position', new THREE.Float32BufferAttribute( this.position, 3 ) );
     this.dot.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
     
-    var mat = new THREE.PointsMaterial();
+    var mat = new THREE.PointsMaterial({size: 15, sizeAttenuation: false});
     var point = new THREE.Points( this.dot, mat );
     scene.add(point);
   }

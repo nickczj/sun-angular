@@ -161,9 +161,15 @@ export class SunComponent implements OnInit {
       if (this.deviceOrientiation.beta !== 0) {
         clearInterval(waitDeviceOrientation);
         //Camera position
-        var x = this.RADIUS * Math.cos(this.deviceOrientiation.beta * this.d2r);
-        var y = this.RADIUS * Math.sin(this.deviceOrientiation.gamma * this.d2r);
-        var z = this.RADIUS * Math.sin(this.deviceOrientiation.alpha * this.d2r);
+        var x = Math.cos(this.deviceOrientiation.beta * this.d2r);
+        var y = Math.sin(this.deviceOrientiation.beta * this.d2r);
+        var z = Math.sin(this.deviceOrientiation.alpha * this.d2r);
+        console.log(x, y, z);
+        console.log(Math.pow(y, 2));
+        var m = 15/(x*x + y*y + z*z);
+        console.log(m);
+        x *= m; y *= m; z *= m;
+        
         console.log("x " + x, "y " + y, "z " + z);
         camera.position.set(x, y, z);
         //camera.position.set(20,20,20);

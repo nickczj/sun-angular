@@ -150,7 +150,7 @@ export class SunComponent implements OnInit {
 
     //Grid line
     var geo = new THREE.EdgesGeometry( sphere.geometry ); // or WireframeGeometry
-    var mat = new THREE.LineBasicMaterial( { color: 0x9400d3, linewidth: 2 } );
+    var mat = new THREE.LineBasicMaterial( { color: 0x9400d3, linewidth: 1 } );
     var wireframe = new THREE.LineSegments( geo, mat );
     sphere.add(wireframe);
 
@@ -194,22 +194,14 @@ export class SunComponent implements OnInit {
   }
 
   createCrossHair(scene,camera){
-    var lineMat = new THREE.LineBasicMaterial({ color: 0xAAFFAA, linewidth:3 });
+    var lineMat = new THREE.LineBasicMaterial({ color: 0xAAFFAA, linewidth:2 });
 
-<<<<<<< HEAD
   // crosshair size
-=======
-    // crosshair size
->>>>>>> 180cb5fa71898816aea9ad45e8ba46786a53fbd6
     var x = 0.01, y = 0.01;
 
     var geometry = new THREE.Geometry();
 
-<<<<<<< HEAD
   // crosshair
-=======
-    // crosshair
->>>>>>> 180cb5fa71898816aea9ad45e8ba46786a53fbd6
     geometry.vertices.push(new THREE.Vector3(0, y, 0));
     geometry.vertices.push(new THREE.Vector3(0, -y, 0));
     geometry.vertices.push(new THREE.Vector3(0, 0, 0));

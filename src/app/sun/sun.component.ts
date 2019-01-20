@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import * as SunCalc from 'suncalc';
 import { Position } from './position.interface';
 import * as THREE from 'three-full';
-import { ThenableWebDriver } from 'selenium-webdriver';
 
 @Component({
   selector: 'app-sun',
@@ -198,33 +197,33 @@ export class SunComponent implements OnInit {
   createCrossHair(scene,camera){
     var lineMat = new THREE.LineBasicMaterial({ color: 0xAAFFAA, linewidth:3 });
 
-// crosshair size
-var x = 0.01, y = 0.01;
+    // crosshair size
+    var x = 0.01, y = 0.01;
 
-var geometry = new THREE.Geometry();
+    var geometry = new THREE.Geometry();
 
-// crosshair
-geometry.vertices.push(new THREE.Vector3(0, y, 0));
-geometry.vertices.push(new THREE.Vector3(0, -y, 0));
-geometry.vertices.push(new THREE.Vector3(0, 0, 0));
-geometry.vertices.push(new THREE.Vector3(x, 0, 0));    
-geometry.vertices.push(new THREE.Vector3(-x, 0, 0));
+    // crosshair
+    geometry.vertices.push(new THREE.Vector3(0, y, 0));
+    geometry.vertices.push(new THREE.Vector3(0, -y, 0));
+    geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(x, 0, 0));    
+    geometry.vertices.push(new THREE.Vector3(-x, 0, 0));
 
-var crosshair = new THREE.Line( geometry, lineMat );
+    var crosshair = new THREE.Line( geometry, lineMat );
 
-// place it in the center
-var crosshairPercentX = 50;
-var crosshairPercentY = 50;
-var crosshairPositionX = (crosshairPercentX / 100) * 2 - 1;
-var crosshairPositionY = (crosshairPercentY / 100) * 2 - 1;
+    // place it in the center
+    var crosshairPercentX = 50;
+    var crosshairPercentY = 50;
+    var crosshairPositionX = (crosshairPercentX / 100) * 2 - 1;
+    var crosshairPositionY = (crosshairPercentY / 100) * 2 - 1;
 
-crosshair.position.x = crosshairPositionX * camera.aspect;
-crosshair.position.y = crosshairPositionY;
+    crosshair.position.x = crosshairPositionX * camera.aspect;
+    crosshair.position.y = crosshairPositionY;
 
-crosshair.position.z = -0.3;
+    crosshair.position.z = -0.3;
 
-camera.add( crosshair );
-scene.add( camera );
+    camera.add( crosshair );
+    scene.add( camera );
   }
 
   createDot(scene, currentSunPositionXYZ) {

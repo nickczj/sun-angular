@@ -112,6 +112,7 @@ export class SunComponent implements OnInit {
           else{
             this.updatePosition()
           }
+          console.log(this.currentSunPositionXYZ);
         }, (error) => {
           console.log('Geolocation error: '+ error);
         },
@@ -125,6 +126,8 @@ export class SunComponent implements OnInit {
     var scene = new THREE.Scene;
     var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 10000);
     var controls = new THREE.OrbitControls(camera);
+    controls.minDistance = 15;
+    controls.maxDistance = 15;
     controls.enableZoom = false;
 
     var docSphere = document.getElementById('sphere');
@@ -137,6 +140,7 @@ export class SunComponent implements OnInit {
     scene.add(axes);
 
     this.createDot(scene, currentSunPositionXYZ);
+    this.createCrossHair(scene,camera);
 
     //Create Sphere
     var geometry = new THREE.SphereGeometry(this.RADIUS, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
@@ -147,7 +151,7 @@ export class SunComponent implements OnInit {
 
     //Grid line
     var geo = new THREE.EdgesGeometry( sphere.geometry ); // or WireframeGeometry
-    var mat = new THREE.LineBasicMaterial( { color: 0xffffff, linewidth: 2 } );
+    var mat = new THREE.LineBasicMaterial( { color: 0x9400d3, linewidth: 2 } );
     var wireframe = new THREE.LineSegments( geo, mat );
     sphere.add(wireframe);
 
@@ -155,12 +159,15 @@ export class SunComponent implements OnInit {
       if (this.deviceOrientiation.beta !== 0) {
         clearInterval(waitDeviceOrientation);
         //Camera position
+        /*
         var x = this.RADIUS * Math.cos(this.deviceOrientiation.beta * this.d2r);
         var y = this.RADIUS * Math.sin(this.deviceOrientiation.gamma * this.d2r);
         var z = this.RADIUS * Math.sin(this.deviceOrientiation.alpha * this.d2r);
         console.log("x " + x, "y " + y, "z " + z);
         camera.position.set(x, y, z);
-        // camera.position.set(10,10,10);
+        */
+        camera.position.set(0.2208109084647484,2.972164609520799,-0.342753667544273);
+        camera.lookAt(sphere.position);
         controls.update();
 
         var render = function () {
@@ -182,6 +189,38 @@ export class SunComponent implements OnInit {
       }
     }, true)
 
+  }
+
+  createCrossHair(scene,camera){
+    var lineMat = new THREE.LineBasicMaterial({ color: 0xAAFFAA, linewidth:3 });
+
+// crosshair size
+var x = 0.01, y = 0.01;
+
+var geometry = new THREE.Geometry();
+
+// crosshair
+geometry.vertices.push(new THREE.Vector3(0, y, 0));
+geometry.vertices.push(new THREE.Vector3(0, -y, 0));
+geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+geometry.vertices.push(new THREE.Vector3(x, 0, 0));    
+geometry.vertices.push(new THREE.Vector3(-x, 0, 0));
+
+var crosshair = new THREE.Line( geometry, lineMat );
+
+// place it in the center
+var crosshairPercentX = 50;
+var crosshairPercentY = 50;
+var crosshairPositionX = (crosshairPercentX / 100) * 2 - 1;
+var crosshairPositionY = (crosshairPercentY / 100) * 2 - 1;
+
+crosshair.position.x = crosshairPositionX * camera.aspect;
+crosshair.position.y = crosshairPositionY;
+
+crosshair.position.z = -0.3;
+
+camera.add( crosshair );
+scene.add( camera );
   }
 
   createDot(scene, currentSunPositionXYZ) {

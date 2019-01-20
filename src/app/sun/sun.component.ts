@@ -124,11 +124,13 @@ export class SunComponent implements OnInit {
 
   createSphere(currentSunPositionXYZ) {
     var scene = new THREE.Scene;
-    var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 10000);
+    var camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 10000);
     var controls = new THREE.OrbitControls(camera);
     controls.minDistance = 15;
     controls.maxDistance = 15;
     controls.enableZoom = false;
+    controls.minDistance = 8;
+    controls.maxDistance = 8;
 
     var docSphere = document.getElementById('sphere');
     var renderer = new THREE.WebGLRenderer({alpha: true});
@@ -165,9 +167,13 @@ export class SunComponent implements OnInit {
         var z = this.RADIUS * Math.sin(this.deviceOrientiation.alpha * this.d2r);
         console.log("x " + x, "y " + y, "z " + z);
         camera.position.set(x, y, z);
+<<<<<<< HEAD
         */
         camera.position.set(0.2208109084647484,2.972164609520799,-0.342753667544273);
         camera.lookAt(sphere.position);
+=======
+        //camera.position.set(20,20,20);
+>>>>>>> 1bbd6393dc7ee1940b14ac56e2b66ba745e3b11b
         controls.update();
 
         var render = function () {
@@ -188,7 +194,6 @@ export class SunComponent implements OnInit {
         gamma: event.gamma
       }
     }, true)
-
   }
 
   createCrossHair(scene,camera){

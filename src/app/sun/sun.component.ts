@@ -45,7 +45,7 @@ export class SunComponent implements OnInit {
     this.subscribeDeviceOrientation();
     this.subscribeCurrentPosition();
     // this.createSphere(this.currentSunPositionXYZ);
-    setInterval(() => this.subscribeCurrentPosition(), 10000);    
+    // setInterval(() => this.subscribeCurrentPosition(), 10000);    
   }
 
   initData() {
@@ -68,22 +68,28 @@ export class SunComponent implements OnInit {
 
   subscribeDeviceOrientation() {
     window.addEventListener("deviceorientation", (event) => {
+      console.log("1");
+      var compassdir;
+      if ((<any>event).webkitCompassHeading) {
+        compassdir = (<any>event).webkitCompassHeading;  
+      } else {
+        compassdir = event.alpha;
+      }
       this.deviceOrientiation = {
-        alpha: event.alpha,
+        alpha: compassdir,
         beta: event.beta,
         gamma: event.gamma
       }
     }, true);
-    // function handleOrientation(event) {
-    //   console.log("a " + event.alpha + "b: " + event.beta + "g: " + event.gamma);
-    // }
-  }
+}
 
   setSunPosition() {
-    var lat = this.currentObserverPosition.longitude;
-    var long = this.currentObserverPosition.latitude;
+    var lat = this.currentObserverPosition.latitude;
+    var long = this.currentObserverPosition.longitude;
 
     this.currentSunPosition = SunCalc.getPosition(new Date(), lat, long);
+    console.log(new Date());
+    console.log("CHANGE AGAIN");
     console.log(this.currentSunPosition);
   }
 
@@ -124,10 +130,13 @@ export class SunComponent implements OnInit {
   createSphere(currentSunPositionXYZ) {
     var scene = new THREE.Scene;
     var camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera.rotation.order = 'ZXY'; // or whatever order is appropriate for your device
     var controls = new THREE.OrbitControls(camera);
     controls.enableZoom = false;
-    //controls.minDistance = 8;
-    //controls.maxDistance = 8;
+    controls.minPolarAngle = 0; // radians
+    controls.maxPolarAngle = Math.PI; // radians
+    controls.minAzimuthAngle = - Infinity; // radians
+    controls.maxAzimuthAngle = Infinity; // radians
 
     var docSphere = document.getElementById('sphere');
     var renderer = new THREE.WebGLRenderer({alpha: true});
@@ -154,43 +163,38 @@ export class SunComponent implements OnInit {
     var wireframe = new THREE.LineSegments( geo, mat );
     sphere.add(wireframe);
 
+    console.log("now6");
+
     var waitDeviceOrientation = setInterval(() => {
       if (this.deviceOrientiation.beta !== 0) {
-        clearInterval(waitDeviceOrientation);
+        // clearInterval(waitDeviceOrientation);
         //Camera position
         var x = Math.cos(this.deviceOrientiation.beta * this.d2r);
         var y = Math.sin(this.deviceOrientiation.beta * this.d2r);
         var z = Math.sin(this.deviceOrientiation.alpha * this.d2r);
-        console.log(x, y, z);
-        console.log(Math.pow(y, 2));
-        var m = 15/(x*x + y*y + z*z);
-        console.log(m);
+        var m = 11/(x*x + y*y + z*z);
         x *= m; y *= m; z *= m;
         
         console.log("x " + x, "y " + y, "z " + z);
         camera.position.set(x, y, z);
-        //camera.position.set(20,20,20);
         controls.update();
 
         var render = function () {
           requestAnimationFrame(render);
-
-          controls.update();
-
           renderer.render(scene, camera);
         };
         
         render();
       }
-    }, 1000);
+    }, 100);
 
-    window.removeEventListener("deviceorientation", (event) => {
-      this.deviceOrientiation = {
-        alpha: event.alpha,
-        beta: event.beta,
-        gamma: event.gamma
-      }
-    }, true)
+    // window.removeEventListener("deviceorientation", (event) => {
+    //   this.deviceOrientiation = {
+    //     alpha: event.alpha,
+    //     beta: event.beta,
+    //     gamma: event.gamma
+    //   }
+    // }, true)
   }
 
   createCrossHair(scene,camera){

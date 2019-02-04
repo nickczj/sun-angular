@@ -68,17 +68,23 @@ export class SunComponent implements OnInit {
 
   subscribeDeviceOrientation() {
     window.addEventListener("deviceorientation", (event) => {
-      console.log("1");
       var compassdir;
-      if ((<any>event).webkitCompassHeading) {
-        compassdir = (<any>event).webkitCompassHeading;  
-      } else {
-        compassdir = event.alpha;
-      }
+      // if ((<any>event).webkitCompassHeading) {
+      //   compassdir = (<any>event).webkitCompassHeading;  
+      // } else {
+      //   compassdir = event.alpha;
+      // }
+      // this.deviceOrientiation = {
+      //   alpha: compassdir,
+      //   beta: event.beta,
+      //   gamma: event.gamma
+      // }
+
+      //for testing
       this.deviceOrientiation = {
-        alpha: compassdir,
-        beta: event.beta,
-        gamma: event.gamma
+        alpha: 30,
+        beta: 30,
+        gamma: 30
       }
     }, true);
 }
@@ -88,8 +94,6 @@ export class SunComponent implements OnInit {
     var long = this.currentObserverPosition.longitude;
 
     this.currentSunPosition = SunCalc.getPosition(new Date(), lat, long);
-    console.log(new Date());
-    console.log("CHANGE AGAIN");
     console.log(this.currentSunPosition);
   }
 
@@ -105,7 +109,6 @@ export class SunComponent implements OnInit {
     if (window.navigator.geolocation) {
       window.navigator.geolocation.watchPosition(
         (position) => {
-          console.log("POSITION: ");
           console.log(position);
           this.currentObserverPosition = position.coords;
           this.setSunPosition();
@@ -130,13 +133,8 @@ export class SunComponent implements OnInit {
   createSphere(currentSunPositionXYZ) {
     var scene = new THREE.Scene;
     var camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 10000);
-    camera.rotation.order = 'ZXY'; // or whatever order is appropriate for your device
     var controls = new THREE.OrbitControls(camera);
     controls.enableZoom = false;
-    controls.minPolarAngle = 0; // radians
-    controls.maxPolarAngle = Math.PI; // radians
-    controls.minAzimuthAngle = - Infinity; // radians
-    controls.maxAzimuthAngle = Infinity; // radians
 
     var docSphere = document.getElementById('sphere');
     var renderer = new THREE.WebGLRenderer({alpha: true});
@@ -163,7 +161,6 @@ export class SunComponent implements OnInit {
     var wireframe = new THREE.LineSegments( geo, mat );
     sphere.add(wireframe);
 
-    console.log("now6");
 
     var waitDeviceOrientation = setInterval(() => {
       if (this.deviceOrientiation.beta !== 0) {

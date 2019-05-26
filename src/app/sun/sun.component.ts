@@ -19,12 +19,12 @@ export class SunComponent implements OnInit {
   dot: THREE.BufferGeometry;
   position: any[];
 
-  currentSunPosition: {
+  sunPos: {
     altitude: number, 
     azimuth: number
   };
 
-  currentSunPositionXYZ: Vector3;
+  sunPosVec: Vector3;
 
   currentObserverPosition: Position = {
     latitude: 0,
@@ -64,19 +64,19 @@ export class SunComponent implements OnInit {
       }
       console.log("DO: ", this.deviceOrientiation);
     }, true);
-}
+  }
 
-  setSunPosition() {
+  setSunPos() {
     var lat = this.currentObserverPosition.latitude;
     var long = this.currentObserverPosition.longitude;
 
-    this.currentSunPosition = SunCalc.getPosition(new Date(), lat, long);
+    this.sunPos = SunCalc.getPosition(new Date(), lat, long);
     console.log('SUN POSITION');
-    console.log(this.currentSunPosition);
+    console.log(this.sunPos);
   }
 
-  setSunPositionXYZ(currentSunPosition){
-    this.currentSunPositionXYZ = new Vector3(
+  setSunPosVec(currentSunPosition){
+    this.sunPosVec = new Vector3(
       this.RADIUS * Math.cos( currentSunPosition.altitude ) * Math.sin( currentSunPosition.azimuth + Math.PI ),
       this.RADIUS * Math.cos( currentSunPosition.altitude ) * Math.cos( currentSunPosition.azimuth + Math.PI ),
       this.RADIUS * Math.sin( currentSunPosition.altitude )
@@ -89,16 +89,16 @@ export class SunComponent implements OnInit {
         (position) => {
           console.log(position);
           this.currentObserverPosition = position.coords;
-          this.setSunPosition();
-          this.setSunPositionXYZ(this.currentSunPosition);
+          this.setSunPos();
+          this.setSunPosVec(this.sunPos);
           if (!this.isSunInit) {
-            this.createSphere(this.currentSunPositionXYZ);
+            this.createSphere(this.sunPosVec);
             this.isSunInit = true;
           }
           else{
-            this.updatePosition()
+            this.updateDotPosition()
           }
-          console.log(this.currentSunPositionXYZ);
+          console.log(this.sunPosVec);
         }, (error) => {
           console.log('Geolocation error: '+ error);
         },
@@ -220,7 +220,7 @@ export class SunComponent implements OnInit {
     scene.add(point);
   }
 
-  updatePosition(){
+  updateDotPosition(){
     this.dot.attributes.position.needsUpdate = true;
   }
 }

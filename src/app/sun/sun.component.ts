@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as SunCalc from 'suncalc';
 import { Position } from './position.interface';
 import * as THREE from 'three-full';
+import { Vector3 } from 'three';
 
 @Component({
   selector: 'app-sun',
@@ -10,20 +11,30 @@ import * as THREE from 'three-full';
 })
 export class SunComponent implements OnInit {
 
-  public RADIUS: number = 3;
+  RADIUS: number = 3;
+  PI = Math.PI; HALF_PI = this.PI * 0.5; TWO_PI = this.PI * 2;
+  D2R = this.PI / 180; R2D = 180 / this.PI;
+  
+  isSunInit: boolean = false;
+  dot: THREE.BufferGeometry;
+  position: any[];
 
   currentSunPosition: {
     altitude: number, 
     azimuth: number
   };
 
-  currentSunPositionXYZ: {
-    x: number,
-    y: number,
-    z: number
-  }
+  currentSunPositionXYZ: Vector3;
 
-  currentObserverPosition: Position;
+  currentObserverPosition: Position = {
+    latitude: 0,
+    longitude: 0,
+    accuracy: 0,
+    altitude: 0,
+    altitudeAccuracy: 0,
+    heading: 0,
+    speed: 0
+  };
 
   deviceOrientiation: {
     alpha: number,
@@ -31,61 +42,27 @@ export class SunComponent implements OnInit {
     gamma: number
   };
 
-  isSunInit: boolean = false;
-  dot: THREE.BufferGeometry;
-  position: any[];
-
-  pi = Math.PI; pi05 = this.pi * 0.5; pi2 = this.pi * 2;
-	d2r = this.pi / 180; r2d = 180 / this.pi;
-
   constructor() { }
 
   ngOnInit() {
-    this.initData();
     this.subscribeDeviceOrientation();
     this.subscribeCurrentPosition();
-    // this.createSphere(this.currentSunPositionXYZ);
-    // setInterval(() => this.subscribeCurrentPosition(), 10000);    
-  }
-
-  initData() {
-    this.currentObserverPosition = {
-      latitude: 0,
-      longitude: 0,
-      accuracy: 0,
-      altitude: 0,
-      altitudeAccuracy: 0,
-      heading: 0,
-      speed: 0
-    }
-
-    this.deviceOrientiation = {
-      alpha: 0,
-      beta: 0,
-      gamma: 0
-    }
   }
 
   subscribeDeviceOrientation() {
     window.addEventListener("deviceorientation", (event) => {
       var compassdir;
-      // if ((<any>event).webkitCompassHeading) {
-      //   compassdir = (<any>event).webkitCompassHeading;  
-      // } else {
-      //   compassdir = event.alpha;
-      // }
-      // this.deviceOrientiation = {
-      //   alpha: compassdir,
-      //   beta: event.beta,
-      //   gamma: event.gamma
-      // }
-
-      //for testing
-      this.deviceOrientiation = {
-        alpha: 30,
-        beta: 30,
-        gamma: 30
+      if ((<any>event).webkitCompassHeading) {
+        compassdir = (<any>event).webkitCompassHeading;  
+      } else {
+        compassdir = event.alpha;
       }
+      this.deviceOrientiation = {
+        alpha: compassdir,
+        beta: event.beta,
+        gamma: event.gamma
+      }
+      console.log("DO: ", this.deviceOrientiation);
     }, true);
 }
 
@@ -94,15 +71,16 @@ export class SunComponent implements OnInit {
     var long = this.currentObserverPosition.longitude;
 
     this.currentSunPosition = SunCalc.getPosition(new Date(), lat, long);
+    console.log('SUN POSITION');
     console.log(this.currentSunPosition);
   }
 
   setSunPositionXYZ(currentSunPosition){
-    this.currentSunPositionXYZ = {
-      x: this.RADIUS * Math.cos( currentSunPosition.altitude ) * Math.sin( currentSunPosition.azimuth + Math.PI ),
-      y: this.RADIUS * Math.cos( currentSunPosition.altitude ) * Math.cos( currentSunPosition.azimuth + Math.PI ),
-      z: this.RADIUS * Math.sin( currentSunPosition.altitude )
-    }
+    this.currentSunPositionXYZ = new Vector3(
+      this.RADIUS * Math.cos( currentSunPosition.altitude ) * Math.sin( currentSunPosition.azimuth + Math.PI ),
+      this.RADIUS * Math.cos( currentSunPosition.altitude ) * Math.cos( currentSunPosition.azimuth + Math.PI ),
+      this.RADIUS * Math.sin( currentSunPosition.altitude )
+    )
   }
 
   subscribeCurrentPosition() {
@@ -131,6 +109,7 @@ export class SunComponent implements OnInit {
   }
 
   createSphere(currentSunPositionXYZ) {
+    console.log("create sphere");
     var scene = new THREE.Scene;
     var camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 10000);
     var controls = new THREE.OrbitControls(camera);
@@ -166,9 +145,9 @@ export class SunComponent implements OnInit {
       if (this.deviceOrientiation.beta !== 0) {
         // clearInterval(waitDeviceOrientation);
         //Camera position
-        var x = Math.cos(this.deviceOrientiation.beta * this.d2r);
-        var y = Math.sin(this.deviceOrientiation.beta * this.d2r);
-        var z = Math.sin(this.deviceOrientiation.alpha * this.d2r);
+        var x = Math.cos(this.deviceOrientiation.beta * this.D2R);
+        var y = Math.sin(this.deviceOrientiation.beta * this.D2R);
+        var z = Math.sin(this.deviceOrientiation.alpha * this.D2R);
         var m = 11/(x*x + y*y + z*z);
         x *= m; y *= m; z *= m;
         
@@ -184,14 +163,6 @@ export class SunComponent implements OnInit {
         render();
       }
     }, 100);
-
-    // window.removeEventListener("deviceorientation", (event) => {
-    //   this.deviceOrientiation = {
-    //     alpha: event.alpha,
-    //     beta: event.beta,
-    //     gamma: event.gamma
-    //   }
-    // }, true)
   }
 
   createCrossHair(scene,camera){
